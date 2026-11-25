@@ -2,11 +2,11 @@ from huggingface_hub import snapshot_download
 from pathlib import Path
 import os
 
-p_cs="/data/coralscapes"
-p_cvqa="/data/coralvqa"
+p_cs="data/datasets/coralscapes"
+p_cvqa="data/datasets/coralvqa"
 
-Path(p_cs).mkdir(exist_ok=True)
-Path(p_cvqa).mkdir(exist_ok=True)
+Path(p_cs).mkdir(parents=True,exist_ok=True)
+Path(p_cvqa).mkdir(parents=True,exist_ok=True)
 
 if os.path.isdir(p_cs):
     snapshot_download(

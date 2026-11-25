@@ -1,0 +1,102 @@
+[
+  {
+    "id": "llava-lora",
+    "label": "LLaVA \u00b7 trained LoRA",
+    "model": "llava",
+    "description": "Standard CoralVQA adaptation",
+    "base_model": "llava-hf/llava-1.5-7b-hf",
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": [
+      "v_proj",
+      "q_proj"
+    ],
+    "tensor_count": 224,
+    "files": {
+      "chat_template.json": "854445c0a45532ecbee1ae9aa31d4be19644060a156f2c88456f50f584261543",
+      "special_tokens_map.json": "358c249e2fb29060c6b73157d428853b0c48710deffc8ee670ab1013880946c9",
+      "tokenizer.json": "661bb7ccf24814295b99afc39dc5028d6cd1053a46689695910cf754a9962225",
+      "adapter_config.json": "872b38fed94943d77e540d62fba54cf592b75788e0bcd99225764235d06a83b2",
+      "adapter_model.safetensors": "fbc280335ec35c0a7cb81811e16234e34ce4683222c6e6c01c5d075b4f90ed5e",
+      "tokenizer.model": "9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347",
+      "added_tokens.json": "a94c56096001713e3eb9a34b1a545a8c1d5e8034ed2fb81f897c8cb54b420121",
+      "processor_config.json": "ada90d5cce92ebe7a68fae2f95d711e70e13c46042e08058def31f4cc178407b",
+      "preprocessor_config.json": "a8d5e64ee5c07ff6d70142856d178ac39d0563da3612e32110fa824f5337b7a1",
+      "tokenizer_config.json": "9649cab5b938617d89006144c603f720239e62fa8d3137c2777250e417bfb067"
+    },
+    "weight_bytes": 19957360
+  },
+  {
+    "id": "llava-conditioned-lora",
+    "label": "LLaVA \u00b7 metric-conditioned LoRA",
+    "model": "llava",
+    "description": "Metric-conditioned CoralVQA adaptation",
+    "base_model": "llava-hf/llava-1.5-7b-hf",
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": [
+      "v_proj",
+      "q_proj"
+    ],
+    "tensor_count": 224,
+    "files": {
+      "chat_template.json": "854445c0a45532ecbee1ae9aa31d4be19644060a156f2c88456f50f584261543",
+      "special_tokens_map.json": "358c249e2fb29060c6b73157d428853b0c48710deffc8ee670ab1013880946c9",
+      "tokenizer.json": "661bb7ccf24814295b99afc39dc5028d6cd1053a46689695910cf754a9962225",
+      "adapter_config.json": "77caf4affcbe6f3dbf13e7081dac7b256ee9ee7a95592dc27c5d8ff4f2283061",
+      "adapter_model.safetensors": "94f6ca54a31d68c5311e3cf158de89c2f1e7281087f5b3ff6967744ca0d20f27",
+      "tokenizer.model": "9e556afd44213b6bd1be2b850ebbbd98f5481437a8021afaf58ee7fb1818d347",
+      "added_tokens.json": "a94c56096001713e3eb9a34b1a545a8c1d5e8034ed2fb81f897c8cb54b420121",
+      "processor_config.json": "ada90d5cce92ebe7a68fae2f95d711e70e13c46042e08058def31f4cc178407b",
+      "preprocessor_config.json": "a8d5e64ee5c07ff6d70142856d178ac39d0563da3612e32110fa824f5337b7a1",
+      "tokenizer_config.json": "9649cab5b938617d89006144c603f720239e62fa8d3137c2777250e417bfb067"
+    },
+    "weight_bytes": 19957360
+  },
+  {
+    "id": "internvl-lora",
+    "label": "InternVL2.5 \u00b7 trained LoRA",
+    "model": "internvl",
+    "description": "Standard CoralVQA adaptation",
+    "base_model": "OpenGVLab/InternVL2_5-8B",
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": [
+      "wqkv"
+    ],
+    "tensor_count": 64,
+    "files": {
+      "special_tokens_map.json": "8cb729e6fd4c29e8c5be65cb51128735cea0ab56606a186cf8cbb30123c72eae",
+      "adapter_config.json": "6fbb49804023a24338c1828113c6c5d02a31018dcf14cc632ea83dc94beca3ec",
+      "tokenization_internlm2.py": "e548dc777a1def2f5339cfe12de8da2d12500d664e3dafa5c585c407e4b806fa",
+      "adapter_model.safetensors": "e34cc804b155dd22c801d5fd0d7b756454662ae709c93f84dedebca0f36761cd",
+      "tokenizer.model": "f868398fc4e05ee1e8aeba95ddf18ddcc45b8bce55d5093bead5bbf80429b48b",
+      "added_tokens.json": "df59e170102f8d19d3e186cc91c81006c9822ea9fe8ce2b68e7be77195c01db3",
+      "tokenizer_config.json": "a3c739bcdfbb942f972160124327121b8d11c609c1355e05ed9b5ce8d1b5b67a"
+    },
+    "weight_bytes": 10495048
+  },
+  {
+    "id": "paligemma-mix-lora",
+    "label": "PaliGemma 2 Mix \u00b7 trained LoRA",
+    "model": "paligemma-mix",
+    "description": "Standard CoralVQA adaptation",
+    "base_model": "google/paligemma2-3b-mix-448",
+    "r": 8,
+    "lora_alpha": 16,
+    "target_modules": [
+      "q_proj",
+      "v_proj"
+    ],
+    "tensor_count": 212,
+    "files": {
+      "special_tokens_map.json": "c87885c12d55c60133110a234291db5ac952e99e83d9735099d304cb4d45914d",
+      "tokenizer.json": "cdcfcdf1b2cefe4dd5978829a1b8ed0c11ab93fdd14d2ace68856b035d5753fb",
+      "adapter_config.json": "b3e373c0019aeca06dabe1e3769b09e03f66951093b6b34320d24e7246b3ac6f",
+      "adapter_model.safetensors": "b3da790f070628aff99550dd54cb0c69980c725410f21843065bc105abb558c9",
+      "preprocessor_config.json": "6a95b351c016da050e0821591357e732cce182681a8c079ecf196c4943cabdfa",
+      "tokenizer_config.json": "5a4d5042efb7f465976b1c7257dc3b080e8c1a5e5afabe43a0ff7d31e45025ad"
+    },
+    "weight_bytes": 10403584
+  }
+]
