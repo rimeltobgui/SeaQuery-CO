@@ -1,0 +1,65 @@
+name: Import CoralVQA from Drive
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-coralvqa
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - name: Check Drive credential
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -z "$GDRIVE_SERVICE_ACCOUNT_JSON" ]; then
+            echo '::error::Add the GDRIVE_SERVICE_ACCOUNT_JSON repository secret first.'
+            exit 1
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install download dependencies
+        run: python -m pip install 'google-auth==2.63.1' 'requests==2.34.2'
+
+      - name: Download and verify evaluation subset
+        env:
+          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+        run: >-
+          python code/scripts/import_coralvqa_from_drive.py
+          --folder-id 1GzQGfcq0N4cb8J1jlAyS9P2YDqJZHp78
+          --destination data/datasets/coralvqa
+
+      - name: Commit images with Git LFS and push
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git lfs install --local
+          git lfs track 'data/datasets/coralvqa/images/**'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -f -- .gitattributes data/datasets/coralvqa
+          if git diff --cached --quiet; then
+            echo 'The verified subset is already committed.'
+            exit 0
+          fi
+          git commit -m 'Import frozen CoralVQA evaluation subset from Drive'
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
