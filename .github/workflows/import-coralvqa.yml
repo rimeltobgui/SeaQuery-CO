@@ -20,10 +20,10 @@ jobs:
     steps:
       - name: Check Drive credential
         env:
-          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_API_KEY: ${{ secrets.GDRIVE_API_KEY }}
         run: |
-          if [ -z "$GDRIVE_SERVICE_ACCOUNT_JSON" ]; then
-            echo '::error::Add the GDRIVE_SERVICE_ACCOUNT_JSON repository secret first.'
+          if [ -z "$GDRIVE_API_KEY" ]; then
+            echo '::error::Add the GDRIVE_API_KEY repository secret first.'
             exit 1
           fi
 
@@ -37,11 +37,11 @@ jobs:
           python-version: '3.12'
 
       - name: Install download dependencies
-        run: python -m pip install 'google-auth==2.63.1' 'requests==2.34.2'
+        run: python -m pip install 'requests==2.34.2'
 
       - name: Download and verify evaluation subset
         env:
-          GDRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.GDRIVE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_API_KEY: ${{ secrets.GDRIVE_API_KEY }}
         run: >-
           python code/scripts/import_coralvqa_from_drive.py
           --folder-id 1GzQGfcq0N4cb8J1jlAyS9P2YDqJZHp78
