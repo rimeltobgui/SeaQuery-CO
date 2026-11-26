@@ -1,4 +1,4 @@
-"""Import the verified SeaQuery evaluation folder using read-only Drive access."""
+"""Import the verified SeaQuery evaluation folder using an API key and a publicly shared Drive folder."""
 from __future__ import annotations
 
 import argparse
@@ -53,18 +53,15 @@ def unique_files(files):
 
 
 class Drive:
-    def __init__(self, account):
-        self.account = account
+    def __init__(self, api_key):
+        self.api_key = api_key
         self.local = threading.local()
 
     def session(self):
         if not hasattr(self.local, 'session'):
-            from google.auth.transport.requests import AuthorizedSession
-            from google.oauth2 import service_account
-            credentials = service_account.Credentials.from_service_account_info(
-                self.account, scopes=['https://www.googleapis.com/auth/drive.readonly']
-            )
-            self.local.session = AuthorizedSession(credentials)
+            import requests
+            self.local.session = requests.Session()
+            self.local.session.params['key'] = self.api_key
         return self.local.session
 
     def request(self, url, **kwargs):
@@ -214,14 +211,16 @@ def main():
     args = parser.parse_args()
     if not 1 <= args.workers <= 16:
         parser.error('--workers must be between 1 and 16')
-    secret = os.environ.get('GDRIVE_SERVICE_ACCOUNT_JSON', '')
-    if not secret:
-        parser.error('GDRIVE_SERVICE_ACCOUNT_JSON is missing')
+    api_key = os.environ.get('GDRIVE_API_KEY', '').strip()
+    if not api_key:
+        parser.error('GDRIVE_API_KEY is missing')
+    import requests
     try:
-        account = json.loads(secret)
-    except json.JSONDecodeError:
-        parser.error('GDRIVE_SERVICE_ACCOUNT_JSON must contain a JSON service-account key')
-    import_subset(Drive(account), args.folder_id, args.destination, args.workers)
+        import_subset(Drive(api_key), args.folder_id, args.destination, args.workers)
+    except requests.RequestException:
+        # Request exceptions can contain the URL and its API-key parameter.
+        raise SystemExit('Drive network request failed. Retry the workflow.') from None
+
 
 
 if __name__ == '__main__':
