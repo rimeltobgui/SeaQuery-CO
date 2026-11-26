@@ -1,0 +1,1 @@
+"""SeaQuery capsule package."""
