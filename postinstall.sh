@@ -28,6 +28,8 @@ python -m pip install --no-cache-dir \
     matplotlib==3.9.2 \
     seaborn==0.13.2 \
     scikit-learn==1.5.2 \
-    bert-score==0.3.13
+    bert-score==0.3.13 \
+    pyarrow==19.0.1 \
+    bitsandbytes==0.45.5
 
 python -m pip check

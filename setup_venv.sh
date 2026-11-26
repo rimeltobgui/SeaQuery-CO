@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 TARGET_VERSION="3.12.4"
 VENV_DIR="${1:-.seaquery_co_venv}"
@@ -44,10 +46,9 @@ fi
 source "$VENV_DIR/bin/activate"
 pip install --upgrade pip
 
-if [ -f "requirements.txt" ]; then
-    echo "Installing dependencies from requirements.txt..."
-    pip install -r requirements.txt
-fi
+echo "Installing dependencies from $PROJECT_DIR/code/requirements.txt..."
+python -m pip install -r "$PROJECT_DIR/code/requirements.txt"
+python -m pip check
 
 echo "Done! Active environment: $(python --version) inside '$VENV_DIR'"
 
@@ -56,3 +57,4 @@ if ! grep -qxF "$VENV_DIR/" .gitignore 2>/dev/null; then
     echo "$VENV_DIR/" >> .gitignore
     echo "Added '$VENV_DIR/' to .gitignore"
 fi
+
