@@ -12,13 +12,13 @@ PROTOCOL = {"model": "segformer-b2", "precision": "float32", "resize_hw": [1024,
 
 
 class Segmentor:
-    def __init__(self, models_root, device="cpu", cache_dir=None, offline=False):
+    def __init__(self, models_root, device="cpu", cache_dir=None, offline=False, save_models_to_data=False):
         import torch
         from transformers import SegformerConfig, SegformerForSemanticSegmentation, SegformerImageProcessor
         self.device = torch.device(device)
         if self.device.type == "cuda" and not torch.cuda.is_available():
             raise RuntimeError("CUDA requested but unavailable")
-        path, source_options, self.source = resolve_checkpoint("segformer-b2", models_root, cache_dir, offline)
+        path, source_options, self.source = resolve_checkpoint("segformer-b2", models_root, cache_dir, offline, save_models_to_data)
         if self.source["location"] == "local":
             config_path = Path(path) / "config.json"
         else:

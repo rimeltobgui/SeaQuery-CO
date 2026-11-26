@@ -44,12 +44,14 @@ def parser():
     segment.add_argument("--mask", type=Path, help="Measure an existing integer .npy mask instead of running SegFormer")
     segment.add_argument("--output", type=Path, help="Output directory; default: a unique run folder under results/segment/")
     segment.add_argument("--cache-dir", type=Path, help="Temporary/cache directory for selected base checkpoints")
+    segment.add_argument("--code-ocean-save-models", action="store_true", help="Save selected base models under /data/models; use in a Cloud Workstation for persistence")
     segment.add_argument("--offline", action="store_true", help="Require already cached or local checkpoints")
     for name in ("vqa", "batch", "coralvqa"):
         cmd = commands.add_parser(name)
         cmd.add_argument("--model", choices=VLM_NAMES, required=True)
         cmd.add_argument("--models-root", type=Path, default=models)
         cmd.add_argument("--cache-dir", type=Path, help="Temporary/cache directory for selected base checkpoints")
+        cmd.add_argument("--code-ocean-save-models", action="store_true", help="Save selected base models under /data/models; use in a Cloud Workstation for persistence")
         cmd.add_argument("--offline", action="store_true", help="Require already cached or local checkpoints")
         cmd.add_argument("--adapter", help="Adapter folder path or registered alias")
         cmd.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
@@ -97,6 +99,9 @@ def parser():
 def main(argv=None):
     from .pipeline import Pipeline, load_metrics
     args = parser().parse_args(argv)
+    if getattr(args, "code_ocean_save_models", False):
+        from .model_storage import require_code_ocean
+        require_code_ocean(args.models_root)
     args.default_output = hasattr(args, "output") and args.output is None
     if args.default_output:
         directory = new_run_directory(RESULTS_ROOT, args.command, getattr(args, "model", None))
@@ -135,7 +140,7 @@ def main(argv=None):
     os.environ["TRANSFORMERS_OFFLINE"] = "1" if args.offline else "0"
     if args.command == "segment":
         pipeline = Pipeline(args.models_root, segmentor_device=args.device,
-                            cache_dir=args.cache_dir, offline=args.offline)
+                            cache_dir=args.cache_dir, offline=args.offline, save_models_to_data=args.code_ocean_save_models)
         result = pipeline.measure(selected_image(args), output_dir=args.output, mask_path=args.mask)
         print(json.dumps(result, indent=2))
         return
@@ -146,7 +151,7 @@ def main(argv=None):
     args.output.parent.mkdir(parents=True, exist_ok=True)
     pipeline = Pipeline(args.models_root, args.model, args.adapter, args.device, args.precision,
                         args.quantization, args.segmentor_device, args.max_tiles, args.max_new_tokens,
-                        args.cache_dir, args.offline)
+                        args.cache_dir, args.offline, args.code_ocean_save_models)
     modes = list(dict.fromkeys(args.modes))
     if args.command == "coralvqa":
         from .coralvqa import CoralVQA

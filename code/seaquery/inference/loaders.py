@@ -34,13 +34,21 @@ def default_cache_dir():
     return root / "seaquery-model-cache"
 
 
-def resolve_checkpoint(name, models_root, cache_dir=None, offline=False):
+def resolve_checkpoint(name, models_root, cache_dir=None, offline=False, save_models_to_data=False):
     """Prefer an existing complete local snapshot; otherwise use a pinned Hub ID."""
+    if save_models_to_data:
+        from .model_storage import require_code_ocean
+        require_code_ocean(models_root)
     path = Path(models_root) / name
     if (path / "config.json").is_file():
         path = checkpoint_files(path)
         manifest = path / "seaquery_source.json"
         source = json.loads(manifest.read_text()) if manifest.is_file() else None
+        return str(path), {"local_files_only": True}, {"location": "local", "manifest": source}
+    if save_models_to_data:
+        from .model_storage import saved_snapshot
+        path = saved_snapshot(name, MODEL_IDS[name], MODEL_REVISIONS[name], models_root, offline)
+        source = json.loads((path / "seaquery_source.json").read_text())
         return str(path), {"local_files_only": True}, {"location": "local", "manifest": source}
     cache = Path(cache_dir or default_cache_dir()).expanduser().resolve()
     cache.mkdir(parents=True, exist_ok=True)
@@ -108,7 +116,7 @@ def resolve_runtime(name, device="auto", precision="auto"):
 
 
 def load_vlm(name, models_root, adapter=None, device="auto", precision="auto", quantization="none",
-             cache_dir=None, offline=False):
+             cache_dir=None, offline=False, save_models_to_data=False):
     import torch
     from transformers import (AutoModel, AutoTokenizer, BitsAndBytesConfig,
                               LlavaForConditionalGeneration, LlavaProcessor,
@@ -118,7 +126,7 @@ def load_vlm(name, models_root, adapter=None, device="auto", precision="auto", q
         raise RuntimeError("Use transformers==4.46.3 for these inference implementations")
     if name not in VLM_NAMES:
         raise ValueError(f"Unsupported VLM: {name}")
-    path, source_options, source = resolve_checkpoint(name, models_root, cache_dir, offline)
+    path, source_options, source = resolve_checkpoint(name, models_root, cache_dir, offline, save_models_to_data)
     device, dtype = resolve_runtime(name, device, precision)
     adapter = Path(adapter).resolve() if adapter else None
     raw_adapter = adapter_config(adapter, MODEL_IDS[name]) if adapter else None

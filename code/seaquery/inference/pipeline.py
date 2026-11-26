@@ -33,7 +33,7 @@ def load_metrics(path):
 class Pipeline:
     def __init__(self, models_root, model=None, adapter=None, device="auto", precision="auto",
                  quantization="none", segmentor_device="cpu", max_tiles=12, max_new_tokens=None,
-                 cache_dir=None, offline=False):
+                 cache_dir=None, offline=False, save_models_to_data=False):
         self.models_root = Path(models_root).resolve()
         self.name = model
         self.adapter = adapter
@@ -41,6 +41,7 @@ class Pipeline:
         self.segmentor_device, self.max_tiles = segmentor_device, max_tiles
         self.max_new_tokens = max_new_tokens
         self.cache_dir, self.offline = cache_dir, offline
+        self.save_models_to_data = save_models_to_data
         if not 1 <= max_tiles <= 12:
             raise ValueError("max_tiles must be between 1 and 12")
         if max_new_tokens is not None and max_new_tokens < 1:
@@ -58,7 +59,7 @@ class Pipeline:
             if self.name is None:
                 raise ValueError("Select a VLM")
             self.state = load_vlm(self.name, self.models_root, self.adapter, self.device,
-                                  self.precision, self.quantization, self.cache_dir, self.offline)
+                                  self.precision, self.quantization, self.cache_dir, self.offline, self.save_models_to_data)
         return self.state
 
     def measure(self, image, output_dir=None, mask_path=None):
@@ -74,7 +75,7 @@ class Pipeline:
             source = "supplied_label_mask"
         else:
             if self.segmentor is None:
-                self.segmentor = Segmentor(self.models_root, self.segmentor_device, self.cache_dir, self.offline)
+                self.segmentor = Segmentor(self.models_root, self.segmentor_device, self.cache_dir, self.offline, self.save_models_to_data)
             mask = self.segmentor.predict(image)
             source = "segformer-b2"
         metrics = validate_metrics(measure_mask(mask))
