@@ -16,10 +16,6 @@ This folder contains the frozen SeaQuery evaluation cohort: 5,158 question-answe
 - `image_manifest.csv`: source and copied Drive IDs, filenames, and original byte sizes.
 - `subset_manifest.json`: counts, source hashes, and validation details.
 
-## Use
-
-The folder is incomplete until the copying notebook finishes and writes `COPY_COMPLETE.json`. Then download the folder and place its contents under `data/datasets/coralvqa/`. Resolve each annotation's `image` value relative to `data/datasets/coralvqa/images/`. Preserve the original image filenames and annotation order. Questions retain the original image/VQA tokens; apply the same prompt normalization as the evaluation code.
-
 ## Attribution
 
 Original dataset: CoralVQA, CoralReefData.
