@@ -1,0 +1,37 @@
+{
+  "scope": "evaluation_only",
+  "questions": 5158,
+  "images": 1037,
+  "validation_pool_images": 1054,
+  "excluded_validation_images_without_evaluation_questions": [
+    "24006085701.jpg",
+    "24026181006.jpg",
+    "25009012301.jpg",
+    "26003082301.jpg",
+    "30002167001.jpg",
+    "30010042201.jpg",
+    "30026152001.jpg",
+    "30026190501.jpg",
+    "34013023901.jpg",
+    "mcr_lter1_out10m_pole1-2_qu3_20100404.jpg",
+    "mcr_lter3_out10m_pole2-3_qu7_20100407.jpg",
+    "mcr_lter4_out17m_pole4-5_qu2_20090407.jpg",
+    "mcr_lter5_fringingreef_pole2-3_qu6_20090413.jpg",
+    "mcr_lter6_out10m_pole4-5_qu4_20090331.jpg",
+    "montipora_119.png",
+    "moorea_159_2008-04-10_mcr_lter2_out10m_pole1-2_qu6_20080410.JPG.jpg",
+    "moorea_671_2008-04-06_mcr_lter6_out17m_pole5-6_qu8_20080406.JPG.jpg"
+  ],
+  "source_sha256": {
+    "val_index.json": "d08b9ecb5fa4527bbda38c1ab6d481ed485d983b5f48e09c6208b6021adf34b4",
+    "coralvqa_split_imagegrouped.json": "0c2a24c8c8e346094fc495e16da657554f8a5eb2c654d144319087cd713e8542",
+    "CoralVQA_train_labeled.jsonl": "6d33719ed8030fc0e678fc74195f56de8f9936d67624eeca68293ef8fe3cb26d"
+  },
+  "checks": {
+    "all_evaluation_records_matched_source_with_multiplicity": true,
+    "all_images_resolved_uniquely_in_source_drive_folder": true,
+    "training_validation_image_overlap": 0
+  },
+  "image_processing": "Original images copied without resizing or re-encoding",
+  "annotation_policy": "Original question and answer text retained; CSV question_id is the frozen eval_row_id"
+}
