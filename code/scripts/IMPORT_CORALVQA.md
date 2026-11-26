@@ -2,13 +2,11 @@
 
 The manual GitHub Actions workflow downloads the completed evaluation folder from Drive into `data/datasets/coralvqa/` and commits it to the selected branch. It preserves individual images and files; no archive is created. Images use Git LFS. The frozen subset contains 1,037 images, 5,158 question-answer records, and 2,128,477,353 image bytes.
 
-## One-time private Drive access
+## One-time API-key setup
 
-1. In [Google Cloud](https://console.cloud.google.com/), select or create a project and enable the **Google Drive API**.
-2. Under **IAM & Admin → Service Accounts**, create a service account. It does not need a project IAM role for reading this shared Drive folder.
-3. Open the service account, select **Keys → Add key → Create new key → JSON**, and download the key.
-4. Copy the key's `client_email`. Share only the [evaluation folder](https://drive.google.com/drive/folders/1GzQGfcq0N4cb8J1jlAyS9P2YDqJZHp78) with that email as **Viewer**. The images and metadata must inherit its access. The folder can remain private.
-5. In **SeaQuery-CO → Settings → Secrets and variables → Actions → New repository secret**, create **GDRIVE_SERVICE_ACCOUNT_JSON**. Paste the entire downloaded JSON key into the secret value. Do not add the key to the repository or chat.
+1. In [Google Cloud](https://console.cloud.google.com/), enable the **Google Drive API** in the project that owns your API key.
+2. Set the [evaluation folder](https://drive.google.com/drive/folders/1GzQGfcq0N4cb8J1jlAyS9P2YDqJZHp78) to **Anyone with the link → Viewer**. This makes its contents accessible to anyone holding the link. Its images and metadata must inherit that access; an API key cannot read a private folder.
+3. In **SeaQuery-CO → Settings → Secrets and variables → Actions → New repository secret**, create **GDRIVE_API_KEY** and paste your text API key as its value. Do not add the key to the repository or chat. A service-account JSON key is not used by this version.
 
 ## Run
 
@@ -37,7 +35,7 @@ Validation before publishing: local fixtures cover complete imports, repeat impo
 ## References
 
 - [Drive file downloads](https://developers.google.com/workspace/drive/api/guides/manage-downloads)
-- [Service-account JSON keys](https://docs.cloud.google.com/iam/docs/keys-create-delete)
+- [Public Drive folders and API keys](https://developers.google.com/workspace/drive/api/guides/search-files#list_files_in_a_public_folder)
 - [GitHub Actions repository secrets](https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets)
 - [Git LFS](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)
 - [Git LFS usage](https://docs.github.com/en/billing/concepts/product-billing/git-lfs)
